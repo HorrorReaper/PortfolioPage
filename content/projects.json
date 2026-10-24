@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "improvement-academy",
+    "name": "Improvement Academy",
+    "kind": "Blog & newsletter brand",
+    "href": "https://improvement-academy.com/",
+    "image": "/images/improvement-academy.webp",
+    "imageAlt": "improvement-academy.com homepage with its top stories",
+    "text": "Notes on fitness, business, self-improvement, and AI & tech."
+  },
+  {
+    "slug": "ae-werbung-meusegast",
+    "name": "ae-Werbung Meusegast",
+    "kind": "Website",
+    "href": "https://www.ae-werbung-meusegast.de/",
+    "image": "/images/ae-werbung.webp",
+    "imageAlt": "ae-werbung-meusegast.de homepage with a welcome text on a wooden desk full of promotional products",
+    "text": "Website for a signage and advertising business in Meusegast near Pirna, Germany."
+  },
+  {
+    "slug": "kathrins-gewichtscoaching",
+    "name": "Kathrins Gewichtscoaching",
+    "kind": "Landing page",
+    "href": "https://kathrins-gewichtscoaching-pirna.de/",
+    "image": "/images/gewichtscoaching.webp",
+    "imageAlt": "kathrins-gewichtscoaching-pirna.de homepage for weight coaching and personal training in Pirna",
+    "text": "Weight coaching and personal training in Pirna, Germany."
+  }
+]

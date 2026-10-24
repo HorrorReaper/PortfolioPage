@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Patrick Eger logo: P and E in a hexagon emblem">
+  <path fill="#ffb224" fill-rule="evenodd" d="M25 4H75L100 50L75 96H25L0 50Z M27.6 9H72.4L94.3 50L72.4 91H27.6L5.7 50Z"/>
+  <path fill="#0b0e1a" d="M27.6 9H72.4L94.3 50L72.4 91H27.6L5.7 50Z"/>
+  <g transform="translate(8.8 0) skewX(-10)">
+    <path fill="#e9ebf7" fill-rule="evenodd" d="M24 28H46L50 32V48L46 52H32V72H24Z M32 36V44H42V36Z"/>
+    <path fill="#ffb224" d="M58 28H78V36H62V46H74V54H62V64H78V72H54V32Z"/>
+  </g>
+</svg>
