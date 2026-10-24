@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Anton, Geist, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { Interactions } from "@/components/Interactions";
 import { JsonLd } from "@/components/JsonLd";
 import { LINKS, PORTRAIT, SITE } from "@/lib/site";
 import "./globals.css";
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <JsonLd data={personJsonLd} />
+        <Interactions />
       </body>
     </html>
   );

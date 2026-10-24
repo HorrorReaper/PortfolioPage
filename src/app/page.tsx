@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { SignalField } from "@/components/SignalField";
+import { Ticker } from "@/components/Ticker";
 import { WorksList } from "@/components/WorksList";
 import { getArticle } from "@/lib/articles";
 import { getProject, getProjects } from "@/lib/projects";
@@ -33,6 +35,7 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className={`hero chrome${PORTRAIT ? " hero--portrait" : ""}`} aria-labelledby="hero-title">
+        <SignalField />
         <div className={`wrap hero__grid${PORTRAIT ? " hero__grid--portrait" : ""}`}>
           <div className="hero__copy">
             <h1 id="hero-title" className="display">
@@ -73,6 +76,8 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
+      <Ticker />
 
       {/* Drei Saeulen, ein System */}
       <section className="section" aria-labelledby="system-title">
