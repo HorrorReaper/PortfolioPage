@@ -29,7 +29,7 @@ export default function ProjectsPage() {
       <SubpageHero
         kicker="Projects"
         title="Things I build."
-        lead="My own product, plus websites and landing pages for local businesses. Building is how I learn fastest."
+        lead="My own product, plus websites and landing pages for local businesses. Shipping things is the best teacher I've had."
         actions={
           <>
             <a className="btn btn--primary" href="#lifequest">

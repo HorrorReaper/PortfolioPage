@@ -60,7 +60,7 @@ export default function AiPage() {
       <SubpageHero
         kicker="AI & technology"
         title="AI as practical leverage."
-        lead="Experiments, automations and technical lessons for more capable builders."
+        lead="Experiments, automations and lessons from using AI every day. Less hype, more 'did this actually save me time?'"
         backdrop={<SignalField />}
         image={{
           src: "/images/hero-operator.webp",

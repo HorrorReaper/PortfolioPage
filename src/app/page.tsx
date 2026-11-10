@@ -11,6 +11,7 @@ import {
   formatDate,
   HOW_IT_WORKS,
   LIFEQUEST,
+  LINKS,
   NEW_TAB_LABEL,
   PILLARS,
   PORTRAIT,
@@ -39,11 +40,11 @@ export default function HomePage() {
         <div className={`wrap hero__grid${PORTRAIT ? " hero__grid--portrait" : ""}`}>
           <div className="hero__copy">
             <h1 id="hero-title" className="display">
-              Building my best self.
+              I&apos;m building LifeQuest. And myself.
             </h1>
             <p className="lead">
-              I combine entrepreneurship, AI &amp; tech and <span className="nowrap">self-development</span> to become the
-              best version of myself and live my best life.
+              I mix entrepreneurship, AI and <span className="nowrap">self-development</span> to level up in real life.
+              In public, bugs included.
             </p>
             <NewsletterForm id="nl-hero" />
           </div>
@@ -84,14 +85,14 @@ export default function HomePage() {
         <div className="wrap pillars">
           <div className="pillars__head reveal">
             <h2 id="system-title" className="h2">
-              Three disciplines.
+              Three skill trees.
               <br />
-              <span className="accent">One system.</span>
+              <span className="accent">One character.</span>
             </h2>
             <p className="prose-narrow">
-              On their own, each is just a skill. Combined, they work as a system: business gives me direction,
-              technology gives me leverage, and self-development keeps me strong enough to use both. That is how I
-              work toward the best version of myself and the best life I can live.
+              Think of it like an RPG: entrepreneurship, AI and self-development are three skill trees, and I&apos;m
+              leveling all of them on the same character. Business gives direction, tech gives leverage, and training
+              plus journaling keep the character alive long enough to use both.
             </p>
           </div>
           <ul className="pillars__list">
@@ -161,7 +162,7 @@ export default function HomePage() {
                 <h3 className="h3">
                   <a href="#projects">{LIFEQUEST.name}</a>
                 </h3>
-                <p>Journaling, tasks and habits in one game that keeps you showing up.</p>
+                <p>My life as a video game. Journaling, tasks and habits in one app that pays you XP for showing up.</p>
               </div>
               <p className="start-card__more">
                 More about LifeQuest <span aria-hidden="true">→</span>
@@ -200,8 +201,8 @@ export default function HomePage() {
               ))}
             </ul>
             <p className="prose-narrow">{LIFEQUEST.status}</p>
-            <a className="btn btn--primary" href={LIFEQUEST.href} target="_blank" rel="noopener noreferrer">
-              Visit LifeQuest
+            <a className="btn btn--primary" href={LINKS.lifequestApp} target="_blank" rel="noopener noreferrer">
+              Start playing
               <span className="btn__arrow" aria-hidden="true">
                 ↗
               </span>
@@ -255,22 +256,25 @@ export default function HomePage() {
               About me
             </h2>
             <p>
-              I&apos;m Patrick. I study business informatics and work as a business development working student at
-              SpeechMind, an AI SaaS startup.
+              Hey, I&apos;m Patrick. I study business informatics at HTW Dresden and work as a business development
+              working student at SpeechMind, an AI SaaS startup. In practice that means a bit of everything, with AI
+              tools open pretty much all day.
             </p>
             <p>
-              On the side, I&apos;m building LifeQuest and writing about entrepreneurship, AI, self-development and
-              fitness. I share what works and what doesn&apos;t.
+              As a kid I was overweight and convinced I was addicted to sugar (chocolate, mostly). At some point I
+              rewrote that story, started seeing myself as an athlete and went from 260 to 180 pounds, roughly 118 to
+              82 kg. Still the best proof I have that people can change.
             </p>
             <p>
-              My goal: build ambitious things, use new technology in practice and become the best version of myself.
-              In public, one step at a time.
+              Now I&apos;m building LifeQuest, lifting, journaling and writing down what I learn. The plan: grow
+              LifeQuest in the open as a serial builder, without living a one-dimensional life. Business, bodybuilding
+              and the people I care about all get a seat at the table.
             </p>
           </div>
           <dl className="facts reveal">
             <div>
               <dt>Studies</dt>
-              <dd>Business Informatics</dd>
+              <dd>Business Informatics, HTW Dresden</dd>
             </div>
             <div>
               <dt>Currently</dt>
@@ -279,6 +283,10 @@ export default function HomePage() {
             <div>
               <dt>Founder of</dt>
               <dd>LifeQuest</dd>
+            </div>
+            <div>
+              <dt>Daily non-negotiables</dt>
+              <dd>Training, journaling, deep work before the inbox, reading</dd>
             </div>
             <div>
               <dt>Topics</dt>
@@ -325,7 +333,8 @@ export default function HomePage() {
             Follow along as I level up.
           </h2>
           <p className="prose-narrow">
-            In my newsletter Improvement Academy, I write about AI, business, health and personal growth.
+            My newsletter Improvement Academy: AI, business, health and personal growth. Written the way I&apos;d
+            explain it to a friend.
           </p>
           <NewsletterForm id="nl-closing" />
         </div>

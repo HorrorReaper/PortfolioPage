@@ -8,7 +8,7 @@ export const contentType = "image/png";
 
 export default function OpengraphImage() {
   return new ImageResponse(
-    <OgCard title="Building my best self." footer="Entrepreneurship. AI. Self-development." />,
+    <OgCard title="I'm building LifeQuest. And myself." footer="Entrepreneurship. AI. Self-development." />,
     size,
   );
 }

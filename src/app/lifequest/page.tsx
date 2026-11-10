@@ -68,6 +68,19 @@ export default function ProjectsPage() {
         }
       />
 
+      <section className="section" aria-labelledby="why-built-title">
+        <div className="wrap statement reveal">
+          <h2 id="why-built-title" className="h2">
+            Why I built <span className="accent">it.</span>
+          </h2>
+          <p className="lead">{LIFEQUEST.intro}</p>
+          <p className="prose-narrow">
+            Journal in one app, habits in another, to-dos in a third, and motivation in none of them. LifeQuest puts
+            it all in one place and turns showing up into XP.
+          </p>
+        </div>
+      </section>
+
       <section className="section" aria-labelledby="how-title">
         <div className="wrap product">
           <div className="product__visual reveal">

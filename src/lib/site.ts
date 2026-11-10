@@ -9,7 +9,7 @@ export const SITE = {
   locale: "en_US",
   title: "Patrick Eger: Entrepreneurship, AI and Self-Development",
   description:
-    "I combine entrepreneurship, AI & tech and self-development to become the best version of myself and live my best life.",
+    "Founder of LifeQuest. I mix entrepreneurship, AI and self-development to level up in real life, in public.",
 } as const;
 
 export const LINKS = {
@@ -94,15 +94,15 @@ export const nextRoom = (href: string) => {
 export const PILLARS = [
   {
     title: "Entrepreneurship",
-    text: "I'm building my own product, LifeQuest, and I build websites and landing pages for local businesses. Building things is how I learn fastest.",
+    text: "I'm building LifeQuest, my own product, and I build websites and landing pages for local businesses. Turns out shipping things is the fastest way to find out what you don't know yet.",
   },
   {
     title: "AI & Tech",
-    text: "As a business development working student at an AI SaaS startup, I see what AI changes in practice. I use new tools wherever they make me faster and better.",
+    text: "At SpeechMind, an AI SaaS startup, I do business development, which in practice means a bit of everything. AI tools are part of almost every day, so I learn fast what actually helps and what's just shiny.",
   },
   {
     title: "Self-Development",
-    text: "Journaling, training and clear habits are the foundation. Without them, neither the business nor the tech gets me where I want to go.",
+    text: "Training, journaling, deep work before the inbox and a lot of reading. Not glamorous, but it's the stuff that keeps everything else from falling apart.",
   },
 ] as const;
 
@@ -128,9 +128,9 @@ export const LIFEQUEST = {
   imageAlt: "LifeQuest homepage with the headline “Your life is a game” and a sample overview of habits and tasks",
   appImage: "/images/lifequest-app.webp",
   appImageAlt: "Sample LifeQuest view: level, streak and XP progress, habits, a task and the question of the day",
-  intro: "LifeQuest is where all three meet: my own business, built as a web app, made for self-development.",
+  intro: "I got tired of switching between apps for my journal, my habits and my to-dos. I also wanted to build my own thing. And honestly, I've always liked seeing my life as a video game. So I built LifeQuest.",
   text: "It combines journaling with tasks, habits and daily plans. Every entry, finished task and habit earns XP, so showing up becomes a game.",
-  status: "The app is live and free to use. Challenges are in progress, mobile apps for iOS and Android are planned.",
+  status: "It's live and free to play. Challenges are in the works, mobile apps for iOS and Android are on the roadmap.",
 } as const;
 
 export type ExternalPost = { title: string; date: string; slug: string };

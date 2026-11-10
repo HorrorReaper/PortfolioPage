@@ -52,7 +52,7 @@ export default function FitnessPage() {
       <SubpageHero
         kicker="Fitness & health"
         title="Physical discipline is the base layer."
-        lead="Bodybuilding keeps ambition honest: show up, track the reps, recover, repeat."
+        lead="I went from 260 to 180 pounds. Bodybuilding keeps the ambition honest: show up, track the reps, recover, repeat."
         image={{
           src: "/images/fitness-discipline.webp",
           alt: "Training log, lifting belt, chalk and barbell in a quiet gym",
@@ -92,14 +92,19 @@ export default function FitnessPage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="why-title">
+      <section className="section" aria-labelledby="story-title">
         <div className="wrap statement reveal">
-          <h2 id="why-title" className="h2">
-            Why fitness belongs here.
+          <h2 id="story-title" className="h2">
+            From 260 to <span className="accent">180 pounds.</span>
           </h2>
           <p className="lead">
-            Fitness is not a side interest. It is the most visible proof that standards, patience and repetition can
-            change a person.
+            As a kid I was overweight and had a story on repeat: &ldquo;I&apos;m addicted to sugar, especially
+            chocolate.&rdquo; At some point I rewrote it. In my head I became an athlete, and the habits followed. That
+            took me from 260 to 180 pounds, roughly 118 to 82 kg.
+          </p>
+          <p className="prose-narrow">
+            Fitness isn&apos;t a side quest for me. It&apos;s the most visible proof that standards, patience and
+            repetition can change a person. The same playbook now runs my business and my studies.
           </p>
         </div>
       </section>

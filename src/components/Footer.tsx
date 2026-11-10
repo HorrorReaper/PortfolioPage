@@ -15,7 +15,7 @@ export function Footer() {
               <BrandMark className="brand__mark" />
               {SITE.name}
             </p>
-            <p>Business informatics student and founder of LifeQuest. Entrepreneurship, AI &amp; tech and self-development.</p>
+            <p>Business informatics student at HTW Dresden and founder of LifeQuest. Leveling up in business, tech and life.</p>
           </div>
 
           <nav aria-label="Pages">

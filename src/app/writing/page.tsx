@@ -34,8 +34,8 @@ export default function WritingIndexPage() {
           <p className="kicker">Writing</p>
           <h1 className="display">Notes from the climb.</h1>
           <p className="lead">
-            Notes on discipline, AI, training and the founder path. Lessons, systems and honest notes from the road to
-            my best self.
+            Notes on discipline, AI, training and building LifeQuest. Written the way I&apos;d explain it to a friend,
+            mistakes included.
           </p>
         </header>
 
