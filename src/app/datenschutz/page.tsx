@@ -4,7 +4,7 @@ import { LEGAL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
-  description: "Informationen zur Verarbeitung personenbezogener Daten auf patrickeger.com.",
+  description: "Informationen zur Verarbeitung personenbezogener Daten auf patrickeger.de.",
   alternates: { canonical: "/datenschutz" },
 };
 

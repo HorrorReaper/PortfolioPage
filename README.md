@@ -1,4 +1,4 @@
-# patrickeger.com
+# patrickeger.de
 
 Personal brand website of Patrick Eger. English-language (legal pages in German), built with Next.js (App Router) and
 TypeScript. Positioning: combining entrepreneurship, AI & tech and self-development to become the best version of
@@ -115,12 +115,12 @@ Rebuild or redeploy. The index, sitemap, canonical URL, structured data and soci
    `.gitignore` already excludes `node_modules` and `.next`.
 2. Go to <https://vercel.com/new>, import the repository. Framework preset is detected as Next.js.
    Build command `npm run build`, no environment variables are needed. Click **Deploy**.
-3. In the Vercel project: **Settings, Domains**, add `patrickeger.com` and `www.patrickeger.com`.
-   Set `patrickeger.com` as primary and let `www` redirect to it.
+3. In the Vercel project: **Settings, Domains**, add `patrickeger.de` and `www.patrickeger.de`.
+   Set `patrickeger.de` as primary and let `www` redirect to it.
 4. At your domain registrar set the DNS records Vercel shows (typically an `A` record `76.76.21.21` for the apex
    domain and a `CNAME` for `www` pointing to `cname.vercel-dns.com`; use the exact values Vercel displays).
-5. Wait for the certificate (automatic HTTPS), then open <https://patrickeger.com> and run through the checklist below.
-6. Submit `https://patrickeger.com/sitemap.xml` in Google Search Console.
+5. Wait for the certificate (automatic HTTPS), then open <https://patrickeger.de> and run through the checklist below.
+6. Submit `https://patrickeger.de/sitemap.xml` in Google Search Console.
 
 Every push to the main branch redeploys automatically.
 

@@ -15,5 +15,5 @@ export default async function ArticleOpengraphImage({ params }: { params: Promis
   const { slug } = await params;
   const title = getArticle(slug)?.title ?? SITE.title;
 
-  return new ImageResponse(<OgCard title={title} footer="patrickeger.com/writing" titleSize={66} />, size);
+  return new ImageResponse(<OgCard title={title} footer="patrickeger.de/writing" titleSize={66} />, size);
 }

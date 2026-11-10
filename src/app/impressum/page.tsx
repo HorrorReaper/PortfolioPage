@@ -3,7 +3,7 @@ import { LEGAL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: `Anbieterkennzeichnung nach § 5 DDG für patrickeger.com.`,
+  description: `Anbieterkennzeichnung nach § 5 DDG für patrickeger.de.`,
   alternates: { canonical: "/impressum" },
 };
 

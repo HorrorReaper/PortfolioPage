@@ -5,7 +5,7 @@
 
 export const SITE = {
   name: "Patrick Eger",
-  url: "https://patrickeger.com",
+  url: "https://patrickeger.de",
   locale: "en_US",
   title: "Patrick Eger: Entrepreneurship, AI and Self-Development",
   description:
