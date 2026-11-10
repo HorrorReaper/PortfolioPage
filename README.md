@@ -165,3 +165,12 @@ The logo is the "Emblem" (P and E in a hexagon). Files: `public/brand/logo-b-emb
 `apple-icon.png`), in header and footer (`src/components/BrandMark.tsx`) and in the social preview images
 (`src/lib/og.tsx`). If you change the shape, update the SVG file and `BrandMark.tsx` together, then regenerate the PNG
 icons. The unused concept A and a comparison page live at `/logos` (not indexed).
+
+## Analytics (Google Tag Manager)
+
+Container `GTM-T628W48Q` (`GTM_ID` in `src/lib/site.ts`) is loaded only after a visitor clicks "Accept" in the
+consent banner (`src/components/Consent.tsx`). The choice is stored in localStorage; "Cookie settings" in the footer
+reopens the banner, and declining after accepting deletes Google cookies and reloads the page. Because the site
+navigates client-side, use a **History Change** trigger in GTM (in addition to Page View) so page views on internal
+navigation are counted. The privacy policy describes GTM generically: once tags are configured in the container (for
+example GA4), name them in `src/app/datenschutz/page.tsx`.

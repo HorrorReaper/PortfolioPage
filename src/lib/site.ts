@@ -34,7 +34,7 @@ export const LEGAL = {
   street: "Am Ziegenrücken 24",
   city: "01809 Dohna",
   email: "pe.business004@outlook.de",
-  updated: "Oktober 2026",
+  updated: "November 2026",
 } as const;
 
 export const LEGAL_NAV = [
@@ -54,6 +54,9 @@ export const PORTRAIT: Portrait | null = {
   width: 400,
   height: 400,
 };
+
+/** Google Tag Manager Container, wird nur nach Einwilligung geladen (src/components/Consent.tsx). */
+export const GTM_ID = "GTM-T628W48Q";
 
 export const CTA_LABEL = "Join the newsletter";
 export const NEW_TAB_LABEL = " (opens in a new tab)";

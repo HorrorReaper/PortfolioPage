@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LEGAL_NAV, LINKS, NAV, NEW_TAB_LABEL, SITE, SOCIALS } from "@/lib/site";
 import { BrandMark } from "./BrandMark";
+import { ConsentSettingsButton } from "./Consent";
 
 const NEW_TAB = <span className="sr-only">{NEW_TAB_LABEL}</span>;
 
@@ -73,6 +74,9 @@ export function Footer() {
                   <Link href={item.href}>{item.label}</Link>
                 </li>
               ))}
+              <li>
+                <ConsentSettingsButton />
+              </li>
             </ul>
           </nav>
         </div>

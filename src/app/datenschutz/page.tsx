@@ -39,9 +39,10 @@ export default function DatenschutzPage() {
 
         <h2>Das Wichtigste in Kürze</h2>
         <p>
-          Diese Website setzt keine Cookies, bindet keine Analyse- oder Werbedienste ein und lädt keine Schriftarten
-          oder Skripte von fremden Servern. Es gibt kein Kontaktformular und kein Nutzerkonto. Personenbezogene Daten
-          fallen nur beim Aufruf der Seiten (Server-Logfiles), bei einer E-Mail an mich und bei der Newsletter-Anmeldung
+          Ohne deine Einwilligung setzt diese Website keine Cookies und lädt keine Analyse- oder Werbedienste. Nur
+          wenn du im Banner auf „Accept“ klickst, wird der Google Tag Manager geladen (siehe unten). Schriftarten kommen
+          von meinem eigenen Server. Es gibt kein Kontaktformular und kein Nutzerkonto. Personenbezogene Daten fallen
+          außerdem beim Aufruf der Seiten (Server-Logfiles), bei einer E-Mail an mich und bei der Newsletter-Anmeldung
           bei Substack an.
         </p>
 
@@ -61,10 +62,29 @@ export default function DatenschutzPage() {
           Daten zusammen.
         </p>
 
-        <h2>Cookies und Tracking</h2>
+        <h2>Einwilligung, Cookies und Google Tag Manager</h2>
         <p>
-          Ich verwende keine Cookies und keine Tracking- oder Analysewerkzeuge. Deshalb ist auch kein Cookie-Banner
-          nötig.
+          Beim ersten Besuch fragt ein Banner, ob du der Nutzung von Analysediensten zustimmst. Deine Entscheidung
+          speichere ich im lokalen Speicher deines Browsers (localStorage), damit das Banner nicht bei jedem Aufruf
+          erscheint. Dieser Eintrag ist technisch erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Ändern oder widerrufen kannst du
+          die Einwilligung jederzeit über „Cookie settings“ im Footer; dabei werden gesetzte Google-Cookies gelöscht.
+        </p>
+        <p>
+          Nur wenn du zustimmst, lädt diese Website den Google Tag Manager der Google Ireland Limited, Gordon House,
+          Barrow Street, Dublin 4, Irland. Der Tag Manager ist ein Werkzeug, über das Analyse-Dienste (Tags) eingebunden
+          werden. Dabei werden unter anderem deine IP-Adresse, Informationen zu Browser und Gerät sowie die aufgerufenen
+          Seiten an Google übertragen; über die eingebundenen Dienste können Cookies gesetzt werden. Eine Übermittlung
+          in die USA ist möglich; Google ist unter dem EU-US Data Privacy Framework zertifiziert. Rechtsgrundlage ist
+          deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO, § 25 Abs. 1 TDDDG), die du jederzeit mit Wirkung für die
+          Zukunft widerrufen kannst. Ohne Einwilligung wird nichts von Google geladen.
+        </p>
+        <p>
+          Welche Dienste über den Tag Manager laufen und wie lange deren Cookies gespeichert werden, richtet sich nach
+          der Einrichtung des Containers. Weitere Informationen findest du in der{" "}
+          <a href="https://policies.google.com/privacy" rel="noopener noreferrer">
+            Datenschutzerklärung von Google
+          </a>
+          .
         </p>
 
         <h2>Schriftarten</h2>
