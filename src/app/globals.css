@@ -371,7 +371,7 @@ ul {
     flex: 1;
   }
 }
-@media (min-width: 1080px) {
+@media (min-width: 1280px) {
   .site-header__cta {
     display: block;
   }
@@ -1110,6 +1110,18 @@ ul {
     grid-column: 1 / -1;
     padding-block: clamp(2.5rem, 5vw, 4rem);
   }
+}
+
+/* Self-Development: vier Gewohnheiten als 2x2-Raster */
+@media (min-width: 900px) {
+  .lab-grid.habit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.habit-grid .lab-card .link {
+  justify-self: start;
+  margin-top: 0.25rem;
+  font-weight: 600;
 }
 
 /* Fitness: Trainingsstandards */

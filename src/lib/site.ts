@@ -71,6 +71,7 @@ export const SOCIALS = [
 export const NAV = [
   { label: "AI", href: "/ai" },
   { label: "Fitness", href: "/fitness" },
+  { label: "Self-Development", href: "/self-development" },
   { label: "LifeQuest", href: "/lifequest" },
   { label: "Projects", href: "/projects" },
   { label: "Writing", href: "/writing" },
@@ -81,6 +82,7 @@ export const ROOMS = [
   { label: "AI & Tech", href: "/ai" },
   { label: "Writing", href: "/writing" },
   { label: "Fitness", href: "/fitness" },
+  { label: "Self-Development", href: "/self-development" },
   { label: "LifeQuest", href: "/lifequest" },
   { label: "Projects", href: "/projects" },
 ] as const;
