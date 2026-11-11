@@ -2059,9 +2059,69 @@ ul {
   color: var(--text);
 }
 
+/* ---------- 404-Spiel ---------- */
+.runner {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 2.5rem;
+}
+.runner__head {
+  display: grid;
+  gap: 0.35rem;
+}
+.runner__stage {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+}
+.runner__canvas {
+  display: block;
+  width: 100%;
+  touch-action: manipulation;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--line);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+.runner__canvas:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+.runner__hud {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  display: flex;
+  gap: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  pointer-events: none;
+}
+.runner__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  background: rgb(7 9 20 / 0.55);
+}
+.runner__msg {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 /* ---------- Fehlerseite ---------- */
 .notfound {
   min-height: 60dvh;
+  padding-block: 3rem 5rem;
   display: grid;
   align-content: center;
   justify-items: start;

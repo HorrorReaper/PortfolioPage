@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BotRunner } from "@/components/BotRunner";
 import { NAV } from "@/lib/site";
 
 export default function NotFound() {
@@ -21,6 +22,7 @@ export default function NotFound() {
           </Link>
         ))}
       </nav>
+      <BotRunner />
     </div>
   );
 }
