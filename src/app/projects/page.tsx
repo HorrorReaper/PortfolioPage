@@ -94,6 +94,17 @@ export default function ProjectsPage() {
 
       <section className="section" aria-labelledby="code-title">
         <div className="wrap">
+          <Link href="/focus" className="related reveal" style={{ marginBottom: "1rem" }}>
+            <span className="kicker">Tiny tool</span>
+            <span className="related__title">Focus mode</span>
+            <span className="related__text">
+              A free focus timer on this site: set a block, write down up to three tasks and get a calm full-screen
+              countdown with a photo of your choice.
+            </span>
+            <span className="feed__more">
+              Try it <span aria-hidden="true">→</span>
+            </span>
+          </Link>
           <a className="related reveal" href={LINKS.developer} target="_blank" rel="noopener noreferrer">
             <span className="kicker">More code</span>
             <span id="code-title" className="related__title">

@@ -12,6 +12,7 @@ const ROUTES = [
   "/self-development",
   "/lifequest",
   "/projects",
+  "/focus",
   "/writing",
   "/writing/10-brutally-honest-journaling-questions",
   "/writing/judgment-before-tools",

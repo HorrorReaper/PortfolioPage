@@ -155,6 +155,19 @@ export default function SelfDevelopmentPage() {
               Check it out <span aria-hidden="true">→</span>
             </span>
           </Link>
+          <Link href="/focus" className="related reveal" style={{ marginTop: "1rem" }}>
+            <span className="kicker">Try it now, free</span>
+            <span id="focus-title" className="related__title">
+              Focus mode
+            </span>
+            <span className="related__text">
+              My morning deep work block as a tiny tool: pick a duration and up to three tasks, then it&apos;s just
+              you, a photo and a countdown.
+            </span>
+            <span className="feed__more">
+              Start a session <span aria-hidden="true">→</span>
+            </span>
+          </Link>
         </div>
       </section>
 
