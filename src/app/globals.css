@@ -2598,3 +2598,76 @@ html.focus-lock body {
     animation: none;
   }
 }
+
+/* Pomodoro */
+.focus-modes {
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+.focus-custom-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+.focus-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.focus-stepper__label {
+  margin-right: 0.4rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.focus-stepper__btn {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1.5px #39427a;
+  transition: box-shadow 0.2s;
+}
+.focus-stepper__btn:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+.focus-stepper__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.focus-stepper__value {
+  min-width: 2ch;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  text-align: center;
+}
+.focus-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.focus-dots li {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: rgb(255 255 255 / 0.25);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.focus-dots li.is-done {
+  background: var(--accent);
+}
+.focus-dots li.is-now {
+  background: #fff;
+}
+.focus-screen.is-break .focus-screen__shade {
+  background: rgb(5 7 15 / 0.5);
+}
+.focus-screen.is-break .focus-screen__big {
+  color: var(--accent);
+}

@@ -98,7 +98,7 @@ export default function ProjectsPage() {
             <span className="kicker">Tiny tool</span>
             <span className="related__title">Focus mode</span>
             <span className="related__text">
-              A free focus timer on this site: set a block, write down up to three tasks and get a calm full-screen
+              A free focus timer on this site: one long block or Pomodoro, up to three tasks and a calm full-screen
               countdown with a photo of your choice.
             </span>
             <span className="feed__more">

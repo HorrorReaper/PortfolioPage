@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FocusApp } from "@/components/FocusApp";
 
 const DESCRIPTION =
-  "A free focus timer: pick a duration and up to three tasks, then get a calm full-screen view with a photo and a countdown.";
+  "A free focus timer with Pomodoro mode: pick a duration and up to three tasks, then get a calm full-screen view with a photo and a countdown.";
 
 export const metadata: Metadata = {
   title: "Focus",
@@ -30,6 +30,7 @@ export default function FocusPage() {
             work block I do every morning, as a tiny tool.
           </p>
           <ul className="focus-notes">
+            <li>One long block or Pomodoro: 25/5, 50/10 or your own rhythm.</li>
             <li>No account. Your tasks stay in your browser.</li>
             <li>Reload by accident? Your timer and tasks keep going.</li>
             <li>

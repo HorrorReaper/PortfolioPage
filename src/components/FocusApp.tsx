@@ -9,12 +9,24 @@ import { NEW_TAB_LABEL } from "@/lib/site";
 
 /**
  * Fokus-Timer im Stil von Momentum: Dauer und bis zu drei Tasks waehlen, dann Vollbild mit Foto und Countdown.
+ * Zwei Modi: ein durchgehender Block oder Pomodoro (Fokusphasen mit kurzen Pausen, lange Pause nach jeder 4. Runde).
  * Alles bleibt im Browser. Die Session liegt in localStorage (Fortsetzen nach Reload), ein eigenes Foto
  * nur als Object-URL im Speicher und ist nach dem Schliessen des Tabs weg.
  */
 
 type Scene = FocusTheme | "custom";
 type Task = { text: string; done: boolean };
+type Pomodoro = {
+  rounds: number;
+  /** Aktuelle Runde, beginnt bei 1. */
+  round: number;
+  /** Abgeschlossene Fokusphasen. */
+  completed: number;
+  phase: "focus" | "break";
+  focusMs: number;
+  breakMs: number;
+  longBreakMs: number;
+};
 type Session = {
   tasks: Task[];
   scene: Scene;
@@ -26,13 +38,22 @@ type Session = {
   /** Restzeit in ms, waehrend pausiert. */
   pausedLeft: number;
   status: "running" | "paused" | "done";
+  /** Summe der Fokuszeit aus abgeschlossenen Phasen (Pausen zaehlen nicht). */
   focusedMs: number;
+  /** Nur im Pomodoro-Modus gesetzt. totalMs/endsAt beziehen sich dann auf die aktuelle Phase. */
+  pomodoro?: Pomodoro;
 };
 
 const STORAGE_KEY = "pe-focus-session";
 const PRESETS = [25, 50, 90];
 const MIN_MINUTES = 5;
 const MAX_MINUTES = 240;
+const RHYTHMS = [
+  { id: "25", focus: 25, rest: 5 },
+  { id: "50", focus: 50, rest: 10 },
+] as const;
+const LONG_BREAK_EVERY = 4;
+const MAX_POMODOROS = 8;
 const NEW_TAB = <span className="sr-only">{NEW_TAB_LABEL}</span>;
 
 const save = (s: Session | null) => {
@@ -67,6 +88,53 @@ const clock = (ms: number) => {
   return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
 };
 
+const isBreak = (s: Session) => s.pomodoro?.phase === "break";
+
+/** Pausenlaenge nach Runde n: lang nach jeder 4. Runde. */
+const breakAfter = (p: Pomodoro, round: number) => (round % LONG_BREAK_EVERY === 0 ? p.longBreakMs : p.breakMs);
+
+/**
+ * Zieht abgelaufene Phasen nach: im Pomodoro-Modus Fokus -> Pause -> Fokus, sonst Ende der Session.
+ * Laeuft in einer Schleife, damit auch ein Reload nach langer Abwesenheit den richtigen Stand trifft.
+ */
+function settle(s: Session, now: number): { next: Session; phases: number } {
+  let next = s;
+  let phases = 0;
+  while (next.status === "running" && next.endsAt !== null && next.endsAt <= now) {
+    phases++;
+    const p = next.pomodoro;
+    const endedAt: number = next.endsAt;
+    if (!p) {
+      next = { ...next, status: "done", endsAt: null, pausedLeft: 0, focusedMs: next.focusedMs + next.totalMs };
+      break;
+    }
+    if (p.phase === "focus") {
+      const focusedMs = next.focusedMs + next.totalMs;
+      const completed = p.completed + 1;
+      if (p.round >= p.rounds) {
+        next = { ...next, status: "done", endsAt: null, pausedLeft: 0, focusedMs, pomodoro: { ...p, completed } };
+        break;
+      }
+      const len = breakAfter(p, p.round);
+      next = { ...next, focusedMs, totalMs: len, endsAt: endedAt + len, pomodoro: { ...p, completed, phase: "break" } };
+    } else {
+      next = {
+        ...next,
+        totalMs: p.focusMs,
+        endsAt: endedAt + p.focusMs,
+        pomodoro: { ...p, phase: "focus", round: p.round + 1 },
+      };
+    }
+  }
+  return { next, phases };
+}
+
+const minutesLabel = (min: number) => {
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  return h > 0 ? `${h} h${m ? ` ${m} min` : ""}` : `${m} min`;
+};
+
 const themeOf = (scene: Scene): FocusTheme => (scene === "custom" ? "nature" : scene);
 const randomIndex = (n: number) => Math.floor(Math.random() * n);
 
@@ -94,6 +162,11 @@ export function FocusApp() {
   // Setup
   const [preset, setPreset] = useState<number | "custom">(90);
   const [customMinutes, setCustomMinutes] = useState("60");
+  const [mode, setMode] = useState<"block" | "pomodoro">("block");
+  const [rhythm, setRhythm] = useState<"25" | "50" | "custom">("25");
+  const [pomoFocus, setPomoFocus] = useState("30");
+  const [pomoRest, setPomoRest] = useState("5");
+  const [pomodoros, setPomodoros] = useState(4);
   const [taskInputs, setTaskInputs] = useState(["", "", ""]);
   const [scene, setScene] = useState<Scene>("nature");
   const [error, setError] = useState("");
@@ -136,11 +209,9 @@ export function FocusApp() {
     baseTitle.current = document.title;
     const stored = load();
     if (!stored) return;
-    if (stored.status === "running" && stored.endsAt && stored.endsAt <= Date.now()) {
-      update({ ...stored, status: "done", endsAt: null, focusedMs: stored.totalMs });
-    } else {
-      setSession(stored);
-    }
+    const { next, phases } = settle(stored, Date.now());
+    if (phases > 0) update(next);
+    else setSession(stored);
   }, [update]);
 
   // Object-URL des eigenen Fotos freigeben
@@ -155,21 +226,16 @@ export function FocusApp() {
     blinkRef.current = null;
   }, []);
 
-  const finish = useCallback(
-    (s: Session, focusedMs: number, withSignal: boolean) => {
-      update({ ...s, status: "done", endsAt: null, pausedLeft: 0, focusedMs });
-      if (withSignal) {
-        chime(audioRef.current);
-        stopBlink();
-        let on = false;
-        blinkRef.current = window.setInterval(() => {
-          on = !on;
-          setTitle(on ? "Time's up! | Focus" : "Locked in. | Focus");
-        }, 1000);
-      }
-    },
-    [update, stopBlink, setTitle],
-  );
+  /** Ende der ganzen Session: Ton und blinkender Tab-Titel. */
+  const signalDone = useCallback(() => {
+    chime(audioRef.current);
+    stopBlink();
+    let on = false;
+    blinkRef.current = window.setInterval(() => {
+      on = !on;
+      setTitle(on ? "Time's up! | Focus" : "Locked in. | Focus");
+    }, 1000);
+  }, [stopBlink, setTitle]);
 
   // Takt: Restzeit aus endsAt berechnen, damit Hintergrund-Tabs nicht driften
   useEffect(() => {
@@ -177,12 +243,17 @@ export function FocusApp() {
     const tick = () => {
       const t = Date.now();
       setNow(t);
-      if (session.endsAt && session.endsAt <= t) finish(session, session.totalMs, true);
+      const { next, phases } = settle(session, t);
+      if (phases === 0) return;
+      update(next);
+      // Phasenwechsel im Pomodoro: nur der Ton. Ende der Session: Ton plus blinkender Titel.
+      if (next.status === "done") signalDone();
+      else chime(audioRef.current);
     };
     tick();
     const id = window.setInterval(tick, 250);
     return () => window.clearInterval(id);
-  }, [session, finish]);
+  }, [session, update, signalDone]);
 
   // Tab-Titel mit Restzeit
   const left = session ? leftOf(session, now) : 0;
@@ -192,8 +263,10 @@ export function FocusApp() {
       setTitle(null);
       return;
     }
-    if (session.status === "running") setTitle(`${clock(left)} | Focus`);
-    if (session.status === "paused") setTitle(`Paused ${clock(left)} | Focus`);
+    const pomo = session.pomodoro;
+    const label = !pomo ? "" : isBreak(session) ? "Break " : `${pomo.round}/${pomo.rounds} `;
+    if (session.status === "running") setTitle(`${label}${clock(left)} | Focus`);
+    if (session.status === "paused") setTitle(`Paused ${label}${clock(left)} | Focus`);
     if (session.status === "done" && !blinkRef.current) setTitle("Locked in. | Focus");
   }, [session, left, stopBlink, setTitle]);
 
@@ -260,16 +333,44 @@ export function FocusApp() {
     return () => window.removeEventListener("keydown", onKey);
   }, [session, togglePause]);
 
+  /** Fokus- und Pausenlaenge in Minuten fuer den Pomodoro-Modus, null bei ungueltiger Eingabe. */
+  const rhythmMinutes = () => {
+    if (rhythm !== "custom") {
+      const r = RHYTHMS.find((x) => x.id === rhythm)!;
+      return { focus: r.focus, rest: r.rest };
+    }
+    const focus = Number(pomoFocus);
+    const rest = Number(pomoRest);
+    if (!Number.isFinite(focus) || focus < 5 || focus > 120 || !Number.isFinite(rest) || rest < 1 || rest > 30) {
+      return null;
+    }
+    return { focus, rest };
+  };
+
+  const pomodoroSummary = () => {
+    const r = rhythmMinutes();
+    if (!r) return "Focus 5 to 120 minutes, breaks 1 to 30 minutes.";
+    let total = pomodoros * r.focus;
+    for (let i = 1; i < pomodoros; i++) total += i % LONG_BREAK_EVERY === 0 ? r.rest * 3 : r.rest;
+    const long = pomodoros > LONG_BREAK_EVERY ? `, a ${r.rest * 3} min break after every 4th` : "";
+    return `${pomodoros} × ${r.focus} min focus, ${r.rest} min breaks${long}. About ${minutesLabel(total)} in total.`;
+  };
+
   const start = (e: FormEvent) => {
     e.preventDefault();
     const tasks = taskInputs.map((t) => t.trim()).filter(Boolean);
     const minutes = preset === "custom" ? Number(customMinutes) : preset;
+    const rest = rhythmMinutes();
     if (tasks.length === 0) {
       setError("Add at least one task. What's the one thing this block is for?");
       return;
     }
-    if (!Number.isFinite(minutes) || minutes < MIN_MINUTES || minutes > MAX_MINUTES) {
+    if (mode === "block" && (!Number.isFinite(minutes) || minutes < MIN_MINUTES || minutes > MAX_MINUTES)) {
       setError(`Pick a duration between ${MIN_MINUTES} and ${MAX_MINUTES} minutes.`);
+      return;
+    }
+    if (mode === "pomodoro" && !rest) {
+      setError("Pick a focus length between 5 and 120 minutes and a break between 1 and 30 minutes.");
       return;
     }
     if (scene === "custom" && !customUrl) {
@@ -283,9 +384,22 @@ export function FocusApp() {
     } catch {
       audioRef.current = null;
     }
-    const totalMs = Math.round(minutes * 60_000);
+    const pomodoro: Pomodoro | undefined =
+      mode === "pomodoro" && rest
+        ? {
+            rounds: pomodoros,
+            round: 1,
+            completed: 0,
+            phase: "focus",
+            focusMs: rest.focus * 60_000,
+            breakMs: rest.rest * 60_000,
+            longBreakMs: rest.rest * 3 * 60_000,
+          }
+        : undefined;
+    const totalMs = pomodoro ? pomodoro.focusMs : Math.round(minutes * 60_000);
     setNow(Date.now());
     update({
+      pomodoro,
       tasks: tasks.map((text) => ({ text, done: false })),
       scene,
       photo: randomIndex(FOCUS_PHOTOS[themeOf(scene)].length),
@@ -333,9 +447,17 @@ export function FocusApp() {
     update({ ...session, tasks: session.tasks.map((t, j) => (j === i ? { ...t, done: !t.done } : t)) });
   };
 
+  const skipBreak = () => {
+    if (!session || !isBreak(session)) return;
+    const t = Date.now();
+    setNow(t);
+    update(settle({ ...session, status: "running", endsAt: t, pausedLeft: 0 }, t).next);
+  };
+
   const endEarly = () => {
     if (!session) return;
-    finish(session, session.totalMs - leftOf(session, Date.now()), false);
+    const elapsed = isBreak(session) ? 0 : session.totalMs - leftOf(session, Date.now());
+    update({ ...session, status: "done", endsAt: null, pausedLeft: 0, focusedMs: session.focusedMs + elapsed });
   };
 
   const exit = () => {
@@ -361,33 +483,127 @@ export function FocusApp() {
           <legend className="focus-step__title">
             <span className="kicker">Step 1</span> How long?
           </legend>
-          <div className="focus-chips" role="radiogroup" aria-label="Duration">
-            {PRESETS.map((m) => (
-              <label key={m} className={`focus-chip${preset === m ? " is-on" : ""}`}>
-                <input type="radio" name="duration" checked={preset === m} onChange={() => setPreset(m)} />
-                {m} min
-              </label>
-            ))}
-            <label className={`focus-chip${preset === "custom" ? " is-on" : ""}`}>
-              <input type="radio" name="duration" checked={preset === "custom"} onChange={() => setPreset("custom")} />
-              Custom
+          <div className="focus-chips focus-modes" role="radiogroup" aria-label="Timer mode">
+            <label className={`focus-chip${mode === "block" ? " is-on" : ""}`}>
+              <input type="radio" name="mode" checked={mode === "block"} onChange={() => setMode("block")} />
+              One block
+            </label>
+            <label className={`focus-chip${mode === "pomodoro" ? " is-on" : ""}`}>
+              <input type="radio" name="mode" checked={mode === "pomodoro"} onChange={() => setMode("pomodoro")} />
+              Pomodoro
             </label>
           </div>
-          {preset === "custom" && (
-            <div className="field focus-custom">
-              <label htmlFor="focus-minutes">
-                Minutes ({MIN_MINUTES} to {MAX_MINUTES})
-              </label>
-              <input
-                id="focus-minutes"
-                type="number"
-                inputMode="numeric"
-                min={MIN_MINUTES}
-                max={MAX_MINUTES}
-                value={customMinutes}
-                onChange={(e) => setCustomMinutes(e.target.value)}
-              />
-            </div>
+          {mode === "pomodoro" ? (
+            <>
+              <div className="focus-chips" role="radiogroup" aria-label="Focus and break length">
+                {RHYTHMS.map((r) => (
+                  <label key={r.id} className={`focus-chip${rhythm === r.id ? " is-on" : ""}`}>
+                    <input type="radio" name="rhythm" checked={rhythm === r.id} onChange={() => setRhythm(r.id)} />
+                    {r.focus} / {r.rest}
+                  </label>
+                ))}
+                <label className={`focus-chip${rhythm === "custom" ? " is-on" : ""}`}>
+                  <input
+                    type="radio"
+                    name="rhythm"
+                    checked={rhythm === "custom"}
+                    onChange={() => setRhythm("custom")}
+                  />
+                  Custom
+                </label>
+              </div>
+              {rhythm === "custom" && (
+                <div className="focus-custom-row">
+                  <div className="field focus-custom">
+                    <label htmlFor="focus-pomo-focus">Focus minutes (5 to 120)</label>
+                    <input
+                      id="focus-pomo-focus"
+                      type="number"
+                      inputMode="numeric"
+                      min={5}
+                      max={120}
+                      value={pomoFocus}
+                      onChange={(e) => setPomoFocus(e.target.value)}
+                    />
+                  </div>
+                  <div className="field focus-custom">
+                    <label htmlFor="focus-pomo-rest">Break minutes (1 to 30)</label>
+                    <input
+                      id="focus-pomo-rest"
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={30}
+                      value={pomoRest}
+                      onChange={(e) => setPomoRest(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+              <div className="focus-stepper" role="group" aria-labelledby="focus-pomo-count-label">
+                <span id="focus-pomo-count-label" className="focus-stepper__label">
+                  Pomodoros
+                </span>
+                <button
+                  type="button"
+                  className="focus-stepper__btn"
+                  onClick={() => setPomodoros((n) => Math.max(1, n - 1))}
+                  disabled={pomodoros <= 1}
+                  aria-label="One pomodoro less"
+                >
+                  −
+                </button>
+                <output className="focus-stepper__value" aria-live="polite">
+                  {pomodoros}
+                </output>
+                <button
+                  type="button"
+                  className="focus-stepper__btn"
+                  onClick={() => setPomodoros((n) => Math.min(MAX_POMODOROS, n + 1))}
+                  disabled={pomodoros >= MAX_POMODOROS}
+                  aria-label="One pomodoro more"
+                >
+                  +
+                </button>
+              </div>
+              <p className="field__help">{pomodoroSummary()}</p>
+            </>
+          ) : (
+            <>
+              <div className="focus-chips" role="radiogroup" aria-label="Duration">
+                {PRESETS.map((m) => (
+                  <label key={m} className={`focus-chip${preset === m ? " is-on" : ""}`}>
+                    <input type="radio" name="duration" checked={preset === m} onChange={() => setPreset(m)} />
+                    {m} min
+                  </label>
+                ))}
+                <label className={`focus-chip${preset === "custom" ? " is-on" : ""}`}>
+                  <input
+                    type="radio"
+                    name="duration"
+                    checked={preset === "custom"}
+                    onChange={() => setPreset("custom")}
+                  />
+                  Custom
+                </label>
+              </div>
+              {preset === "custom" && (
+                <div className="field focus-custom">
+                  <label htmlFor="focus-minutes">
+                    Minutes ({MIN_MINUTES} to {MAX_MINUTES})
+                  </label>
+                  <input
+                    id="focus-minutes"
+                    type="number"
+                    inputMode="numeric"
+                    min={MIN_MINUTES}
+                    max={MAX_MINUTES}
+                    value={customMinutes}
+                    onChange={(e) => setCustomMinutes(e.target.value)}
+                  />
+                </div>
+              )}
+            </>
           )}
         </fieldset>
 
@@ -491,6 +707,7 @@ export function FocusApp() {
             onPause={togglePause}
             onAddFive={addFive}
             onEnd={endEarly}
+            onSkipBreak={skipBreak}
             onExit={exit}
             onNextPhoto={nextPhoto}
             onPickFile={onPickFile}
@@ -514,6 +731,7 @@ type ScreenProps = {
   onPause: () => void;
   onAddFive: () => void;
   onEnd: () => void;
+  onSkipBreak: () => void;
   onExit: () => void;
   onNextPhoto: () => void;
   onPickFile: (file: File | undefined) => void;
@@ -539,11 +757,21 @@ function FocusScreen(p: ScreenProps) {
   const doneCount = session.tasks.filter((t) => t.done).length;
   const ownFile = useRef<HTMLInputElement>(null);
   const pickOwn = () => ownFile.current?.click();
+  const pomo = session.pomodoro;
+  const onBreak = isBreak(session);
+  const longBreak = Boolean(pomo && onBreak && pomo.round % LONG_BREAK_EVERY === 0);
+  const phaseLabel = !pomo
+    ? "Focus mode"
+    : onBreak
+      ? longBreak
+        ? "Long break"
+        : "Break"
+      : `Pomodoro ${pomo.round} of ${pomo.rounds}`;
 
   return (
     <div
       ref={p.overlayRef}
-      className={`focus-screen${done ? " is-done" : ""}`}
+      className={`focus-screen${done ? " is-done" : ""}${onBreak && !done ? " is-break" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-label="Focus session"
@@ -555,7 +783,9 @@ function FocusScreen(p: ScreenProps) {
       <div className="focus-screen__shade" aria-hidden="true" />
 
       <div className="focus-screen__top">
-        <p className="kicker">{done ? "Session complete" : session.status === "paused" ? "Paused" : "Focus mode"}</p>
+        <p className="kicker">
+          {done ? "Session complete" : session.status === "paused" ? `Paused · ${phaseLabel}` : phaseLabel}
+        </p>
         <div className="focus-screen__icons">
           {p.canFullscreen && (
             <button type="button" className="focus-icon" onClick={p.onFullscreen} aria-pressed={p.fullscreen}>
@@ -574,10 +804,15 @@ function FocusScreen(p: ScreenProps) {
             {minutes >= 1 ? `${minutes} minute${minutes === 1 ? "" : "s"}.` : "Under a minute."}
             <span className="accent"> Locked in.</span>
           </p>
+          {pomo && (
+            <p className="focus-screen__sub">
+              {pomo.completed} of {pomo.rounds} pomodoro{pomo.rounds === 1 ? "" : "s"} finished.
+            </p>
+          )}
           <p className="focus-screen__sub">
             {doneCount === session.tasks.length
               ? "Every task checked off. That's the whole game."
-              : `${doneCount} of ${session.tasks.length} tasks done. Tick off the rest if you finished them.`}
+              : `${doneCount} of ${session.tasks.length} task${session.tasks.length === 1 ? "" : "s"} done. Tick off the rest if you finished them.`}
           </p>
           <TaskList tasks={session.tasks} onToggle={p.onToggleTask} />
           <div className="focus-screen__actions">
@@ -592,7 +827,12 @@ function FocusScreen(p: ScreenProps) {
       ) : (
         <div className="focus-screen__center">
           <p className="focus-screen__now">
-            {current ? (
+            {onBreak ? (
+              <>
+                <span className="kicker">{longBreak ? "Long break" : "Break"}</span> Stand up, drink some water, stay
+                off your phone.
+              </>
+            ) : current ? (
               <>
                 <span className="kicker">Now</span> {current.text}
               </>
@@ -614,14 +854,35 @@ function FocusScreen(p: ScreenProps) {
           >
             <span style={{ transform: `scaleX(${Math.min(1, Math.max(0, progress))})` }} />
           </div>
-          <TaskList tasks={session.tasks} onToggle={p.onToggleTask} />
+          {pomo && (
+            <ol className="focus-dots" aria-label={`${pomo.completed} of ${pomo.rounds} pomodoros finished`}>
+              {Array.from({ length: pomo.rounds }, (_, i) => (
+                <li
+                  key={i}
+                  className={i < pomo.completed ? "is-done" : i === pomo.round - 1 && !onBreak ? "is-now" : undefined}
+                />
+              ))}
+            </ol>
+          )}
+          {onBreak && current && (
+            <p className="focus-screen__sub">
+              Up next: <strong>{current.text}</strong>
+            </p>
+          )}
+          {!onBreak && <TaskList tasks={session.tasks} onToggle={p.onToggleTask} />}
           <div className="focus-screen__actions">
             <button type="button" className="btn btn--primary" onClick={p.onPause}>
               {session.status === "paused" ? "Resume" : "Pause"}
             </button>
-            <button type="button" className="btn btn--ghost focus-ghost" onClick={p.onAddFive}>
-              +5 min
-            </button>
+            {onBreak ? (
+              <button type="button" className="btn btn--ghost focus-ghost" onClick={p.onSkipBreak}>
+                Skip break
+              </button>
+            ) : (
+              <button type="button" className="btn btn--ghost focus-ghost" onClick={p.onAddFive}>
+                +5 min
+              </button>
+            )}
             <button type="button" className="btn btn--ghost focus-ghost" onClick={p.onEnd}>
               End session
             </button>
